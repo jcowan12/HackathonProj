@@ -1,6 +1,8 @@
+from pydoc import classname
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import random
+import numpy as np
 print(tf.__version__)
 
 class myCallback(tf.keras.callbacks.Callback):
@@ -28,11 +30,54 @@ index2 = random.randint(0, 10000)
 index3 = random.randint(0, 10000)
 index4 = random.randint(0, 10000)
 index5 = random.randint(0, 10000)
-print(predictions[index1])
-plt.imshow(test_images[index1])
-print(test_labels[index1])
-# print(predictions[index2])
-# print(predictions[index3])
-# print(predictions[index4])
-# print(predictions[index5])
+
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
+def plot_image(i, predictions_array, true_label, img):
+  predictions_array, true_label, img = predictions_array, true_label[i], img[i]
+  plt.grid(False)
+  plt.xticks([])
+  plt.yticks([])
+  plt.imshow(img, cmap=plt.cm.binary)
+  predicted_label = np.argmax(predictions_array)
+  if predicted_label == true_label:
+    color = 'green'
+  else:
+    color = 'red'
+  plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label],
+                                100*np.max(predictions_array),
+                                class_names[true_label]),
+                                color=color)
+
+# Function to create bar plot of the predictions
+def plot_value_array(i, predictions_array, true_label):
+  predictions_array, true_label = predictions_array, true_label[i]
+  plt.grid(False)
+  plt.xticks(range(10))
+  plt.yticks([])
+  thisplot = plt.bar(range(10), predictions_array, color="#777777")
+  plt.ylim([0, 1])
+  predicted_label = np.argmax(predictions_array)
+  if predicted_label == true_label:
+    color = 'green'
+  else:
+    color = 'red'
+  thisplot[predicted_label].set_color(color)
+  thisplot[true_label].set_color('green')
+
+rows = 4
+cols = 4
+
+num_images = rows * cols
+plt.figure(figsize=(2*2*cols, 2*rows))
+
+for i in range(num_images):
+  plt.subplot(rows, 2*cols, 2*i+1)
+  index = random.randint(0, 10000)
+  plot_image(index, predictions[index], test_labels, test_images)
+  plt.subplot(rows, 2*cols, 2*i+2)
+  plot_value_array(index, predictions[index], test_labels)
+plt.tight_layout()
+plt.show()
 

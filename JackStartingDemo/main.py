@@ -19,11 +19,11 @@ training_images=training_images/255.0
 test_images=test_images/255.0
 model = tf.keras.models.Sequential([
   tf.keras.layers.Flatten(),
-  tf.keras.layers.Dense(512, activation=tf.nn.relu),
+  tf.keras.layers.Dense(784, activation=tf.nn.relu),
   tf.keras.layers.Dense(10, activation=tf.nn.softmax)
 ])
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-model.fit(tf.expand_dims(training_images, axis =-1), training_labels, epochs=10, callbacks=[callbacks])
+model.fit(tf.expand_dims(training_images, axis =-1), training_labels, epochs=20, callbacks=[callbacks])
 predictions = model.predict(test_images)
 index1 = random.randint(0, 10000)
 index2 = random.randint(0, 10000)
